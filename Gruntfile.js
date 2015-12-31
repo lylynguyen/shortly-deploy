@@ -28,12 +28,19 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      build: {
+        src: 'public/dist/<%= pkg.name %>.js', 
+        dest: 'public/dist/<%= pkg.name %>.min.js'
+      }
+      // target: {
+      //   files: {
+      //     'public/dist/<%= pkg.name %>.min.js': ['client/**/*.js']
+      //   }
+      // }
     },
 
     jshint: {
-      files: [
-        // Add filespec list here
-      ],
+      files: ['shortly/**/*.js'],
       options: {
         force: 'true',
         jshintrc: '.jshintrc',
@@ -45,6 +52,11 @@ module.exports = function(grunt) {
     },
 
     cssmin: {
+      target: {
+        files: {
+          'public/dist/<%= pkg.name %>.min.css': ['style.css']
+        }
+      }
     },
 
     watch: {
@@ -100,8 +112,8 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', [
-  ]);
+  grunt.registerTask('build', ['concat', 'uglify', 'mochaTest', 'jshint', 'cssmin', 'nodemon', 'watch', 'shell']);
+  grunt.registerTask('default', ['build']);
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
@@ -111,9 +123,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('deploy', [
-    // add your deploy tasks here
-  ]);
+  grunt.registerTask('deploy', ['build']);
 
 
 };
